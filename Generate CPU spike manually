@@ -1,0 +1,43 @@
+Method 1: Use a CPU Stress Tool (stress or stress-ng)
+Amazon Linux / RHEL / CentOS
+
+$sudo yum install epel-release -y
+$sudo yum install stress -y
+
+Ubuntu / Debian
+
+$sudo apt update
+$sudo apt install stress -y
+
+Run CPU load
+$stress --cpu 4 --timeout 300
+(Replace 4 with the number of vCPUs on your instance.
+--timeout 300 = run for 5 mins.)
+
+To fully burn CPU:
+$ stress --cpu $(nproc)
+
+-------------------------------------------------------------------------------------------
+
+Method 2: Use stress-ng (More advanced)
+
+$ sudo apt install stress-ng -y   # Ubuntu
+$ sudo yum install stress-ng -y   # Amazon Linux 2023
+
+Run high CPU for 5 mins:
+$ stress-ng --cpu 0 --timeout 5m
+
+--------------------------------------------------------------------------------------------
+
+Method 3: Simple Bash CPU Hog (No install needed)
+If you don't want to install any package:
+
+Run infinite loops in background
+
+$ while true; do :; done &
+
+To start multiple CPU burners equal to number of CPU cores:
+$ for i in $(seq 1 $(nproc)); do while true; do :; done & done
+
+
+
