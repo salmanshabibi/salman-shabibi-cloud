@@ -1,0 +1,7 @@
+Session manager enable
+
+Add the aws manage policy to ec2 instance (Go to IAM role create role attached this policy after that go to EC2 click on action then add IAM role)
+AmazonSSMManagedInstanceCore
+
+Restart the agent
+$sudo systemctl start amazon-ssm-agent
