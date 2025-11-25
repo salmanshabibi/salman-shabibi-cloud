@@ -1,0 +1,60 @@
+#!/bin/bash
+
+echo "==== Updating System ===="
+yum update -y
+
+echo "==== Installing CloudWatch Agent ===="
+yum install -y amazon-cloudwatch-agent
+
+echo "==== Creating CloudWatch Agent Config ===="
+cat << 'EOF' > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+{
+  "metrics": {
+    "append_dimensions": {
+      "InstanceId": "${aws:InstanceId}"
+    },
+    "metrics_collected": {
+      "disk": {
+        "measurement": [
+          {"name": "disk_used_percent", "rename": "DiskUtilization"}
+        ],
+        "resources": [
+          "/"
+        ],
+        "ignore_file_system_types": [
+          "sysfs",
+          "devtmpfs",
+          "tmpfs"
+        ]
+      },
+      "mem": {
+        "measurement": [
+          "mem_used_percent"
+        ]
+      },
+      "cpu": {
+        "measurement": [
+          "cpu_usage_idle",
+          "cpu_usage_iowait",
+          "cpu_usage_system",
+          "cpu_usage_user"
+        ],
+        "totalcpu": true
+      }
+    }
+  }
+}
+EOF
+
+echo "==== Starting CloudWatch Agent ===="
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+    -a fetch-config \
+    -m ec2 \
+    -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+    -s
+
+echo "==== Enabling Agent at Boot ===="
+systemctl enable amazon-cloudwatch-agent
+
+echo "==== Showing Agent Status ===="
+systemctl status amazon-cloudwatch-agent -l
