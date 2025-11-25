@@ -1,13 +1,13 @@
 #!/bin/bash
 
-echo "==== Updating System ===="
-yum update -y
+echo "===== Installing Amazon CloudWatch Agent ====="
 
-echo "==== Installing CloudWatch Agent ===="
-yum install -y amazon-cloudwatch-agent
+# Install the agent
+sudo yum install -y amazon-cloudwatch-agent
 
-echo "==== Creating CloudWatch Agent Config ===="
-cat << 'EOF' > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+echo "===== Creating CloudWatch Agent JSON Config ====="
+
+sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null << 'EOF'
 {
   "metrics": {
     "append_dimensions": {
@@ -46,15 +46,20 @@ cat << 'EOF' > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 }
 EOF
 
-echo "==== Starting CloudWatch Agent ===="
-/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-    -a fetch-config \
-    -m ec2 \
-    -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
-    -s
+echo "===== Applying CloudWatch Agent Config ====="
 
-echo "==== Enabling Agent at Boot ===="
-systemctl enable amazon-cloudwatch-agent
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+  -s
 
-echo "==== Showing Agent Status ===="
-systemctl status amazon-cloudwatch-agent -l
+echo "===== Enabling & Starting CloudWatch Agent ====="
+
+sudo systemctl enable amazon-cloudwatch-agent
+sudo systemctl restart amazon-cloudwatch-agent
+
+echo "===== Checking Agent Status ====="
+sudo systemctl status amazon-cloudwatch-agent --no-pager
+
+echo "===== DONE! CloudWatch Agent is fully configured and running ====="
