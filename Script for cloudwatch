@@ -7,7 +7,7 @@ $ vi cloudwatch_alert.sh
 
 Now paste the below content 
 after save the file make permission change 
-$ chmod +x setup-cloudwatch-agent.sh
+$ chmod +x cloudwatch_alert.sh
 
 
 ------------------------Copy script from below-----------------------------------------
