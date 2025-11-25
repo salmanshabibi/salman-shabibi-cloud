@@ -1,3 +1,16 @@
+#before running the script add the policy to IAM role which attached to EC2 instance - if role is not created and attached create it and attach to ec2.
+
+Then Login to EC2 
+Create one .sh file 
+
+$ vi cloudwatch_alert.sh
+
+Now paste the below content 
+after save the file make permission change 
+$ chmod +x setup-cloudwatch-agent.sh
+
+
+------------------------Copy script from below-----------------------------------------
 #!/bin/bash
 
 echo "===== Installing Amazon CloudWatch Agent ====="
