@@ -9,6 +9,10 @@ Now paste the below content
 after save the file make permission change 
 $ chmod +x cloudwatch_alert.sh
 
+After pasting the code and changing the permission exicute below command
+$ sudo ./setup-cloudwatch-agent.sh
+
+
 
 ------------------------Copy script from below-----------------------------------------
 #!/bin/bash
